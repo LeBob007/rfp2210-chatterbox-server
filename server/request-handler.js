@@ -29,6 +29,7 @@ var defaultCorsHeaders = {
 };
 
 let messages = [];
+let id = 0;
 
 var requestHandler = function(request, response) {
   // Request and Response come from node's http module.
@@ -92,11 +93,13 @@ var requestHandler = function(request, response) {
 
     request.on('end', () => {
       let message = JSON.parse(body);
+      message.message_id = id;
+      id++;
       messages.push(message);
     });
 
     response.writeHead(statusCode, headers);
-    response.end();
+    response.end(JSON.stringify(messages));
   } else {
     statusCode = 404;
     response.writeHead(statusCode, headers);
